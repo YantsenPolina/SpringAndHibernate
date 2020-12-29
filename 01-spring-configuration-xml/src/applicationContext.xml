@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Add a logger config to see logging messages -->
+    <!-- Make sure to list this as the first bean so that it is initialized first -->
+    <bean id="loggerConfig" class="com.polinayantsen.springdemo.LoggerConfig" init-method="initLogger">
+        <property name="rootLoggerLevel" value="FINE" />
+        <property name="printedLoggerLevel" value="FINE"/>
+    </bean>
+
+    <!-- Load the properties file -->
+    <context:property-placeholder location="classpath:sport.properties"/>
+
+    <!-- Define your beans here -->
+    <!-- Define the dependency -->
+    <bean id="happyFortuneService"
+          class="com.polinayantsen.springdemo.HappyFortuneService">
+    </bean>
+
+    <bean id="baseballCoach"
+          class="com.polinayantsen.springdemo.BaseballCoach">
+        <!-- Set up constructor injection-->
+        <constructor-arg ref="happyFortuneService"/>
+    </bean>
+
+    <bean id="trackCoach"
+          class="com.polinayantsen.springdemo.TrackCoach">
+        <!-- Set up constructor injection-->
+        <constructor-arg ref="happyFortuneService"/>
+
+        <property name="email" value="${track.email}"/>
+        <property name="team" value="${track.team}"/>
+    </bean>
+
+    <bean id="cricketCoach"
+          class="com.polinayantsen.springdemo.CricketCoach">
+        <!-- Set up setter injection-->
+        <property name="fortuneService" ref="happyFortuneService"/>
+        <property name="email" value="cricket@gmail.com"/>
+        <property name="team" value="CricketTeam"/>
+    </bean>
+</beans>
